@@ -1,28 +1,38 @@
 // Load the config file with the login tokens
 require("dotenv").config();
 
-// Reserve memory so we can stop the bot later using commands
+////////////
+// Memory //
+////////////
+
+// Bot storage
 let discord = 0;
 
+/////////////
+// DISCORD //
+/////////////
+
 // Load the discord bot backend
-const { Client, Events, GatewayIntentBits } = require("discord.js")
-let discordClient = new Client({intents:[GatewayIntentBits.Guilds,GatewayIntentBits.GuildMessages,GatewayIntentBits.MessageContent]});
+const { Client, Events, GatewayIntentBits } = require("discord.js");
+let discordClient = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 
-// Setup the starting message
-discordClient.once(Events.ClientReady, discordStarted)
-async function discordStarted(){
-    console.log("bot activated")
-}
+// Set up the event listeners
+discordClient.once(Events.ClientReady, discordStarted);
+discordClient.on(Events.MessageCreate, message => discordMessage(message));
 
-// Set up the message listener to trigger the specified function for when the bot receives a message
-discordClient.on(Events.MessageCreate, message=>discordMessage(message))
-async function discordMessage(message){
-    console.log(message.content)
-    console.log(message.author.username)
-    if (message.content == "!test"){
-        message.channel.send("Test completed you dumbass")
+// Implement the message event functionality
+async function discordMessage(message) {
+    console.log(message.content);
+    console.log(message.author.username);
+    if (message.content == "!test") {
+        message.channel.send("Executed test command");
     }
 }
 
+// Implement discord bot startup event functionality
+async function discordStarted() {
+    console.log("Discord bot has been activated");
+}
+
 // Log in the discord bot and save it to the memory for later use or stopping the bot
-discord = discordClient.login(process.env.DISCORD)
+discord = discordClient.login(process.env.DISCORD);
